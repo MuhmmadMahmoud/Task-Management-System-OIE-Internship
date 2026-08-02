@@ -1,0 +1,65 @@
+name: CI
+
+# the pipeline runs when I push or when I open a pull request
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+
+  backend:
+    name: Build and test the backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Install Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build the project
+        working-directory: ./backend
+        run: mvn -B clean package -DskipTests
+
+      # the tests use the H2 database in the memory so we do not need PostgreSQL here
+      - name: Run the tests (JUnit + Cucumber BDD)
+        working-directory: ./backend
+        run: mvn -B test
+
+      - name: Keep the test reports
+        # "always" so I can read the reports also when the tests fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: backend/target/surefire-reports/
+
+  frontend:
+    name: Build the frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install the packages
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build the Angular app
+        working-directory: ./frontend
+        run: npm run build
