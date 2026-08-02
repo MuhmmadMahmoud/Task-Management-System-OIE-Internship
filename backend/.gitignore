@@ -1,0 +1,12 @@
+# the folder that Maven builds, it must not go to git
+target/
+
+# the wrapper downloads this jar alone, so we do not commit it
+.mvn/wrapper/maven-wrapper.jar
+
+# editors
+.idea/
+.vscode/
+*.iml
+
+.DS_Store
