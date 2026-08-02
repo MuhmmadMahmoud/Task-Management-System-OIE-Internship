@@ -1,0 +1,29 @@
+.form-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* puts the status and the priority beside each other */
+.two-columns {
+  display: flex;
+  gap: 15px;
+}
+
+.two-columns > div {
+  flex: 1;
+}
+
+.two-columns select {
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.buttons button {
+  flex: 1;
+}

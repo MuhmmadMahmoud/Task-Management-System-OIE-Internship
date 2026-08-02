@@ -1,0 +1,89 @@
+<div class="page">
+
+  <!-- ===== the bar on the top ===== -->
+  <div class="top-bar">
+    <h1>My Tasks</h1>
+    <div class="top-bar-right">
+      <span class="hello">Hello, {{ username }}</span>
+      <button class="btn-grey" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- ===== the filters ===== -->
+  <div class="filters">
+
+    <div class="filter">
+      <label for="statusFilter">Status</label>
+      <select id="statusFilter"
+              name="statusFilter"
+              [(ngModel)]="selectedStatus"
+              (change)="onFilterChange()">
+        <option value="">All</option>
+        @for (status of statusList; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="priorityFilter">Priority</label>
+      <select id="priorityFilter"
+              name="priorityFilter"
+              [(ngModel)]="selectedPriority"
+              (change)="onFilterChange()">
+        <option value="">All</option>
+        @for (priority of priorityList; track priority) {
+          <option [value]="priority">{{ priority }}</option>
+        }
+      </select>
+    </div>
+
+    <button class="btn-grey" (click)="clearFilters()">Clear filters</button>
+
+    <!-- this button goes to the create form -->
+    <a class="btn-blue add-button" routerLink="/tasks/new">+ New Task</a>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error-box">{{ errorMessage }}</div>
+  }
+
+  <!-- ===== the tasks ===== -->
+  @if (loading) {
+    <p class="info-text">Loading the tasks...</p>
+  } @else if (tasks.length === 0) {
+    <div class="empty-box">
+      <p>There are no tasks here.</p>
+      <p class="small">Try to clear the filters, or add a new task.</p>
+    </div>
+  } @else {
+    <table class="tasks-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (task of tasks; track task.id) {
+          <tr>
+            <td class="title-cell">{{ task.title }}</td>
+            <td>{{ task.description || '-' }}</td>
+            <td><span [class]="statusClass(task.status)">{{ task.status }}</span></td>
+            <td><span [class]="priorityClass(task.priority)">{{ task.priority }}</span></td>
+            <td class="actions-cell">
+              <a class="btn-small btn-blue" [routerLink]="['/tasks/edit', task.id]">Edit</a>
+              <button class="btn-small btn-red" (click)="deleteTask(task)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <p class="info-text">Number of tasks: {{ tasks.length }}</p>
+  }
+
+</div>

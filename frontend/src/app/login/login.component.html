@@ -1,0 +1,42 @@
+<div class="auth-page">
+  <div class="card">
+
+    <h1>Task Manager</h1>
+    <p class="subtitle">Login to see your tasks</p>
+
+    <!-- #loginForm gives me the form so I can disable the button when it is not valid -->
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+
+      <label for="username">Username</label>
+      <input type="text"
+             id="username"
+             name="username"
+             [(ngModel)]="username"
+             required
+             placeholder="Write your username">
+
+      <label for="password">Password</label>
+      <input type="password"
+             id="password"
+             name="password"
+             [(ngModel)]="password"
+             required
+             placeholder="Write your password">
+
+      <!-- this red box shows only when there is an error -->
+      @if (errorMessage) {
+        <div class="error-box">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" [disabled]="!loginForm.valid || loading">
+        {{ loading ? 'Please wait...' : 'Login' }}
+      </button>
+    </form>
+
+    <p class="bottom-text">
+      You do not have an account?
+      <a routerLink="/register">Register from here</a>
+    </p>
+
+  </div>
+</div>

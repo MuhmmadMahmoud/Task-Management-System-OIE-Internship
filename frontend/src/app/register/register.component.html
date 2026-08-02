@@ -1,0 +1,64 @@
+<div class="auth-page">
+  <div class="card">
+
+    <h1>Create an account</h1>
+    <p class="subtitle">Register to start adding your tasks</p>
+
+    <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+
+      <label for="username">Username</label>
+      <input type="text"
+             id="username"
+             name="username"
+             [(ngModel)]="username"
+             #usernameInput="ngModel"
+             required
+             minlength="3"
+             placeholder="At least 3 characters">
+      <!-- the message shows only after the user writes something and it is wrong -->
+      @if (usernameInput.invalid && usernameInput.touched) {
+        <small class="field-error">The username must be at least 3 characters</small>
+      }
+
+      <label for="email">Email</label>
+      <input type="email"
+             id="email"
+             name="email"
+             [(ngModel)]="email"
+             #emailInput="ngModel"
+             required
+             email
+             placeholder="example@mail.com">
+      @if (emailInput.invalid && emailInput.touched) {
+        <small class="field-error">Please write a correct email</small>
+      }
+
+      <label for="password">Password</label>
+      <input type="password"
+             id="password"
+             name="password"
+             [(ngModel)]="password"
+             #passwordInput="ngModel"
+             required
+             minlength="6"
+             placeholder="At least 6 characters">
+      @if (passwordInput.invalid && passwordInput.touched) {
+        <small class="field-error">The password must be at least 6 characters</small>
+      }
+
+      @if (errorMessage) {
+        <div class="error-box">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" [disabled]="!registerForm.valid || loading">
+        {{ loading ? 'Please wait...' : 'Register' }}
+      </button>
+    </form>
+
+    <p class="bottom-text">
+      You already have an account?
+      <a routerLink="/login">Login from here</a>
+    </p>
+
+  </div>
+</div>
