@@ -1,0 +1,62 @@
+<div class="form-page">
+  <div class="card">
+
+    <!-- the title changes if we are editing or creating -->
+    <h1>{{ isEditMode ? 'Edit the task' : 'Add a new task' }}</h1>
+
+    <form #taskForm="ngForm" (ngSubmit)="onSubmit()">
+
+      <label for="title">Title</label>
+      <input type="text"
+             id="title"
+             name="title"
+             [(ngModel)]="task.title"
+             #titleInput="ngModel"
+             required
+             placeholder="What do you have to do?">
+      @if (titleInput.invalid && titleInput.touched) {
+        <small class="field-error">The title is required</small>
+      }
+
+      <label for="description">Description</label>
+      <textarea id="description"
+                name="description"
+                rows="4"
+                [(ngModel)]="task.description"
+                placeholder="Write more details here (this one is not required)"></textarea>
+
+      <div class="two-columns">
+        <div>
+          <label for="status">Status</label>
+          <select id="status" name="status" [(ngModel)]="task.status">
+            @for (status of statusList; track status) {
+              <option [value]="status">{{ status }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority" [(ngModel)]="task.priority">
+            @for (priority of priorityList; track priority) {
+              <option [value]="priority">{{ priority }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-box">{{ errorMessage }}</div>
+      }
+
+      <div class="buttons">
+        <button type="submit" class="btn-blue" [disabled]="!taskForm.valid || loading">
+          {{ loading ? 'Please wait...' : (isEditMode ? 'Save the changes' : 'Add the task') }}
+        </button>
+        <button type="button" class="btn-grey" (click)="goBackToTheList()">Cancel</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
