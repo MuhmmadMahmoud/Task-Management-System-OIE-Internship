@@ -1,0 +1,51 @@
+services:
+
+  # ===== the PostgreSQL database =====
+  database:
+    image: postgres:16
+    container_name: taskmanager-db
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: taskuser
+      POSTGRES_PASSWORD: taskpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      # this keeps the data when I stop the containers
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      # the backend must not start before the database is ready
+      test: ["CMD-SHELL", "pg_isready -U taskuser -d taskdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ===== the Spring Boot backend =====
+  backend:
+    build: ./backend
+    container_name: taskmanager-backend
+    environment:
+      # inside docker the database is not "localhost", it is the name of the service
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: taskdb
+      DB_USERNAME: taskuser
+      DB_PASSWORD: taskpassword
+      JWT_SECRET: ThisIsMySecretKeyForTheTaskManagerMiniProject2026
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # ===== the Angular frontend =====
+  frontend:
+    build: ./frontend
+    container_name: taskmanager-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
